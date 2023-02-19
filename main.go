@@ -1,37 +1,40 @@
+package main
+
 import (
 	"flag"
-	"fmt"
 )
 
 // Definerer flag-variablene i hoved-"scope"
 var fahr float64
 var out string
 var funfacts string
+var C float64
+var F float64
+var K float64
 
 // Bruker init (som anbefalt i dokumentasjonen) for å sikre at flagvariablene
 // er initialisert.
 func init() {
+	//Definer flagg-variablene
+	flag.Float64Var(&C, "C", 0.0, "temperatur i grader i celsius")
+	flag.Float64Var(&F, "F", 0.0, "temperatur i grader i farenheit")
+	flag.Float64Var(&K, "K", 0.0, "temperatur i grader i kelvin")
 
-	/*
-	   Her er eksempler på hvordan man implementerer parsing av flagg.
-	   For eksempel, kommando
-	       funtemps -F 0 -out C
-	   skal returnere output: 0°F er -17.78°C
-	*/
-
-	// Definerer og initialiserer flagg-variablene
-	flag.Float64Var(&fahr, "F", 0.0, "temperatur i grader fahrenheit")
-	// Du må selv definere flag-variablene for "C" og "K"
-	flag.StringVar(&out, "out", "C", "beregne temperatur i C - celsius, F - farhenheit, K- Kelvin")
-	flag.StringVar(&funfacts, "funfacts", "sun", "\"fun-facts\" om sun - Solen, luna - Månen og terra - Jorden")
-	// Du må selv definere flag-variabelen for -t flagget, som bestemmer
-	// hvilken temperaturskala skal brukes når funfacts skal vises
+	flag.StringVar(&out, "out", "", "temperaturskala for resultat")
 
 }
 
 func main() {
-
 	flag.Parse()
+	var res float64
+	//standardverdi 0
+	if C != 0 {
+		if out == "F" {
+			res = conv.CelsiusToFarenheit(C)
+		} else if out == "K" {
+			res = C + 273.15
+		}
+	}
 
 	/**
 	    Her må logikken for flaggene og kall til funksjoner fra conv og funfacts
@@ -54,20 +57,15 @@ func main() {
 	*/
 
 	// Her er noen eksempler du kan bruke i den manuelle testingen
-	fmt.Println(fahr, out, funfacts)
-
-	fmt.Println("len(flag.Args())", len(flag.Args()))
-	fmt.Println("flag.NFlag()", flag.NFlag())
-
-	fmt.Println(isFlagPassed("out"))
-
+	//fmt.Println(fahr, out, funfacts)
+	//fmt.Println("len(flag.Args())", len(flag.Args()))
+	//fmt.Println("flag.NFlag()", flag.NFlag())
+	//fmt.Println(isFlagPassed("out"))
 	// Eksempel på enkel logikk
-	if out == "C" && isFlagPassed("F") {
-		// Kalle opp funksjonen FahrenheitToCelsius(fahr), som da
-		// skal returnere °C
-		fmt.Println("0°F er -17.78°C")
-	}
-
+	//if out == "C" && isFlagPassed("F") {
+	// Kalle opp funksjonen FahrenheitToCelsius(fahr), som da
+	// skal returnere °C
+	//fmt.Println("0°F er -17.78°C")
 }
 
 // Funksjonen sjekker om flagget er spesifisert på kommandolinje
