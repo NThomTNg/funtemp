@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+
+	"github.com/SSneakySnek/funtemp/conv"
 )
 
 // Definerer flag-variablene i hoved-"scope"
@@ -15,6 +17,7 @@ var K float64
 // Bruker init (som anbefalt i dokumentasjonen) for å sikre at flagvariablene
 // er initialisert.
 func init() {
+
 	//Definer flagg-variablene
 	flag.Float64Var(&C, "C", 0.0, "temperatur i grader i celsius")
 	flag.Float64Var(&F, "F", 0.0, "temperatur i grader i farenheit")
