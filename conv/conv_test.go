@@ -7,6 +7,7 @@ import (
 
 /*
 *
+
 	Mal for testfunksjoner
 	Du skal skrive alle funksjonene basert på denne malen
 	For alle konverteringsfunksjonene (tilsammen 6)
@@ -29,6 +30,10 @@ func TestFarhenheitToCelsius(t *testing.T) {
 			t.Errorf("expected: %v, got: %v", tc.want, got)
 		}
 	}
+}
+
+func FarhenheitToCelsius(value float64) float64 {
+	return (value - 32) * (5 / 9)
 }
 
 // De andre testfunksjonene implementeres her
