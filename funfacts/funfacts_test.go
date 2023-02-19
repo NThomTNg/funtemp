@@ -1,4 +1,4 @@
-package funfucts
+package funfacts
 
 import (
 	"reflect"
