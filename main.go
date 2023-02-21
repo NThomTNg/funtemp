@@ -5,19 +5,16 @@ import (
 	"fmt"
 )
 
-var fahr float64
-var out string
-var funfacts string
 var C float64
 var F float64
 var K float64
+var toScale string
 
 func main() {
 	var (
 		celsius    float64
 		fahrenheit float64
 		kelvin     float64
-		toScale    string
 	)
 
 	flag.Float64Var(&celsius, "c", 0.0, "Temperatur i Celsius")
