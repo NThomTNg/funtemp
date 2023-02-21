@@ -2,11 +2,9 @@ package main
 
 import (
 	"flag"
-
-	"github.com/SSneakySnek/funtemp/conv"
+	"fmt"
 )
 
-// Definerer flag-variablene i hoved-"scope"
 var fahr float64
 var out string
 var funfacts string
@@ -14,71 +12,65 @@ var C float64
 var F float64
 var K float64
 
-// Bruker init (som anbefalt i dokumentasjonen) for å sikre at flagvariablene
-// er initialisert.
-func init() {
-
-	//Definer flagg-variablene
-	flag.Float64Var(&C, "C", 0.0, "temperatur i grader i celsius")
-	flag.Float64Var(&F, "F", 0.0, "temperatur i grader i farenheit")
-	flag.Float64Var(&K, "K", 0.0, "temperatur i grader i kelvin")
-
-	flag.StringVar(&out, "out", "", "temperaturskala for resultat")
-
-}
-
 func main() {
+	var (
+		celsius    float64
+		fahrenheit float64
+		kelvin     float64
+		toScale    string
+	)
+
+	flag.Float64Var(&celsius, "c", 0.0, "Temperatur i Celsius")
+	flag.Float64Var(&fahrenheit, "f", 0.0, "Temperatur i Fahrenheit")
+	flag.Float64Var(&kelvin, "k", 0.0, "Temperatur i Kelvin")
+	flag.StringVar(&toScale, "to", "", "Temperaturskala for reslutatet (c/f/k)")
+
 	flag.Parse()
-	var res float64
-	//standardverdi 0
-	if C != 0 {
-		if out == "F" {
-			res = conv.CelsiusToFarenheit(C)
-		} else if out == "K" {
-			res = C + 273.15
-		}
+
+	if toScale == "" {
+		fmt.Println("Spesifiser en temperatur skala for å konverter til å bruke -to flag (c/f/k)")
+		return
 	}
 
-	/**
-	    Her må logikken for flaggene og kall til funksjoner fra conv og funfacts
-	    pakkene implementeres.
-	    Det er anbefalt å sette opp en tabell med alle mulige kombinasjoner
-	    av flagg. flag-pakken har funksjoner som man kan bruke for å teste
-	    hvor mange flagg og argumenter er spesifisert på kommandolinje.
-	        fmt.Println("len(flag.Args())", len(flag.Args()))
-			    fmt.Println("flag.NFlag()", flag.NFlag())
-	    Enkelte kombinasjoner skal ikke være gyldige og da må kontrollstrukturer
-	    brukes for å utelukke ugyldige kombinasjoner:
-	    -F, -C, -K kan ikke brukes samtidig
-	    disse tre kan brukes med -out, men ikke med -funfacts
-	    -funfacts kan brukes kun med -t
-	    ...
-	    Jobb deg gjennom alle tilfellene. Vær obs på at det er en del sjekk
-	    implementert i flag-pakken og at den vil skrive ut "Usage" med
-	    beskrivelsene av flagg-variablene, som angitt i parameter fire til
-	    funksjonene Float64Var og StringVar
-	*/
+	if (celsius != 0 && (fahrenheit != 0 || kelvin != 0)) ||
+		(fahrenheit != 0 && (celsius != 0 || kelvin != 0)) ||
+		(kelvin != 0 && (celsius != 0 || fahrenheit != 0)) {
+		fmt.Println("En temperatur verdi for å konverter")
+		return
+	}
 
-	// Her er noen eksempler du kan bruke i den manuelle testingen
-	//fmt.Println(fahr, out, funfacts)
-	//fmt.Println("len(flag.Args())", len(flag.Args()))
-	//fmt.Println("flag.NFlag()", flag.NFlag())
-	//fmt.Println(isFlagPassed("out"))
-	// Eksempel på enkel logikk
-	//if out == "C" && isFlagPassed("F") {
-	// Kalle opp funksjonen FahrenheitToCelsius(fahr), som da
-	// skal returnere °C
-	//fmt.Println("0°F er -17.78°C")
-}
-
-// Funksjonen sjekker om flagget er spesifisert på kommandolinje
-// Du trenger ikke å bruke den, men den kan hjelpe med logikken
-func isFlagPassed(name string) bool {
-	found := false
-	flag.Visit(func(f *flag.Flag) {
-		if f.Name == name {
-			found = true
+	switch toScale {
+	case "c":
+		if celsius != 0 {
+			fmt.Printf("%.2f°C\n", celsius)
+		} else if fahrenheit != 0 {
+			celsius = (fahrenheit - 32) * 5 / 9
+			fmt.Printf("%.2f°F is %.2f°C\n", fahrenheit, celsius)
+		} else {
+			celsius = kelvin - 273.15
+			fmt.Printf("%.2fK is %.2f°C\n", kelvin, celsius)
 		}
-	})
-	return found
+	case "f":
+		if fahrenheit != 0 {
+			fmt.Printf("%.2f°F\n", fahrenheit)
+		} else if celsius != 0 {
+			fahrenheit = celsius*9/5 + 32
+			fmt.Printf("%.2f°C is %.2f°F\n", celsius, fahrenheit)
+		} else {
+			fahrenheit = kelvin*9/5 - 459.67
+			fmt.Printf("%.2fK is %.2f°F\n", kelvin, fahrenheit)
+		}
+	case "k":
+		if kelvin != 0 {
+			fmt.Printf("%.2fK\n", kelvin)
+		} else if celsius != 0 {
+			kelvin = celsius + 273.15
+			fmt.Printf("%.2f°C is %.2fK\n", celsius, kelvin)
+		} else {
+			kelvin = (fahrenheit + 459.67) * 5 / 9
+			fmt.Printf("%.2f°F is %.2fK\n", fahrenheit, kelvin)
+		}
+	default:
+		fmt.Printf("Ukjent temperatur skala %s\n", toScale)
+	}
 }
