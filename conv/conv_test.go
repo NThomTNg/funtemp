@@ -5,15 +5,7 @@ import (
 	"testing"
 )
 
-/*
-*
-
-	Mal for testfunksjoner
-	Du skal skrive alle funksjonene basert på denne malen
-	For alle konverteringsfunksjonene (tilsammen 6)
-	kan du bruke malen som den er (du må selvsagt endre
-	funksjonsnavn og testverdier)
-*/
+// Test for Farenheit til Celsius
 func TestFarhenheitToCelsius(t *testing.T) {
 	type test struct {
 		input float64
@@ -32,9 +24,44 @@ func TestFarhenheitToCelsius(t *testing.T) {
 	}
 }
 
-func FarhenheitToCelsius(value float64) float64 {
-	return (value - 32) * (5 / 9)
+// Test for Kelvin til Farenheit
+func TestKelvinToFahrenheit(t *testing.T) {
+	type test struct {
+		input float64
+		want  float64
+	}
+
+	tests := []test{
+		{input: 0, want: -459.67},
+		{input: 273.15, want: 32},
+		{input: 373.15, want: 212},
+	}
+
+	for _, tc := range tests {
+		got := FahrenheitToKelvin(tc.input)
+		if !reflect.DeepEqual(tc.want, got) {
+			t.Errorf("Expected: %v, got %v", tc.want, got)
+		}
+	}
 }
 
-// De andre testfunksjonene implementeres her
-// ...
+// Test for Kelvin til Celsius
+func TestKelvinToCelsius(t *testing.T) {
+	type test struct {
+		input float64
+		want  float64
+	}
+
+	tests := []test{
+		{input: 0, want: -273.15},
+		{input: 273.15, want: 0},
+		{input: 373.15, want: 100},
+	}
+
+	for _, tc := range tests {
+		got := KelvinToCelsius(tc.input)
+		if !reflect.DeepEqual(tc.want, got) {
+			t.Errorf("Expected: %v, got %v", tc.want, got)
+		}
+	}
+}
